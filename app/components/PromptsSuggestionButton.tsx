@@ -1,5 +1,5 @@
 const PromptsSuggestionButton = ({text, onClick}) => {
-    return(
+    return (
         <button className="prompt-suggestion-button"
                 onClick={onClick}
         >

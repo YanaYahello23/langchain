@@ -20,26 +20,29 @@ const db = client.db(ASTRA_DB_API_ENDPOINT);
 export async function POST(req: Request) {
     try {
         // @ts-ignore
-        const { messages } = req.json();
-        const lastMessage = messages && messages[messages.length - 1]?.content;
-        console.log(messages);
+        const { messages } = await req.json();
+        console.log(req);
+        const latestMessage = messages && messages[messages.length - 1]?.content;
 
         let docContext = "";
+
+        // create with open ai
         const embedding = await openAi.embeddings.create({
             model: "text-embedding-3-small",
-            input: lastMessage,
+            input: latestMessage,
             encoding_format:"float"
         });
 
+        // check in db if this embedding exist
         try {
            const collection  = db.collection(ASTRA_DB_COLLECTION);
            // @ts-ignore
-            const cursor = collection.find(({
+            const cursor = collection.find(null,{
                sort: {
                    $vector: embedding.data[0].embedding,
                },
                limit: 10
-           }));
+           });
 
             const documents = await cursor.toArray();
             const docsMap = documents?.map((doc) => doc.text);
@@ -63,16 +66,17 @@ export async function POST(req: Request) {
             ${docContext}
             END CONTEXT
             --------------
-            QUESTION: ${lastMessage}
+            QUESTION: ${latestMessage}
             --------------
             `
+
         const result = await streamText({
             model: openai('gpt-4'),
-            system: template,
-            messages,
-        });
+            system: "You are an AI assistant",
+            prompt: template,
+        })
 
-        return result.toDataStreamResponse();
+         return result.toDataStreamResponse();
     } catch (error) {
         throw error;
     }

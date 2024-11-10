@@ -4,7 +4,7 @@ const PromptSuggestionsRow = ({onPromptClick}) => {
     const prompts = [
         "What is Lang Chain",
         "What is AI",
-        "When AI was started"
+        "When AI was founded"
     ];
 
 
