@@ -36,7 +36,7 @@ section.populated {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    overflow: scroll;
+    overflow-y: auto;
 }
 
 .starter-text {
@@ -99,7 +99,6 @@ input:focus {
     border: none;
     color: darkblue;
     box-shadow: #5a5ade 0 8px 24px;
-    width: 80%;
     text-align: left;
 }
 

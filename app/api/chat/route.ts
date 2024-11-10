@@ -19,9 +19,7 @@ const db = client.db(ASTRA_DB_API_ENDPOINT);
 
 export async function POST(req: Request) {
     try {
-        // @ts-ignore
         const { messages } = await req.json();
-        console.log(req);
         const latestMessage = messages && messages[messages.length - 1]?.content;
 
         let docContext = "";
@@ -36,7 +34,6 @@ export async function POST(req: Request) {
         // check in db if this embedding exist
         try {
            const collection  = db.collection(ASTRA_DB_COLLECTION);
-           // @ts-ignore
             const cursor = collection.find(null,{
                sort: {
                    $vector: embedding.data[0].embedding,
@@ -60,7 +57,7 @@ export async function POST(req: Request) {
             other sites. If the context doesn't include the information you need to answer based on your 
             existing knowledge and don't mention the source of your information or what the context does
             or doesn't include.
-            Format the response using markdown here applicable and don't return images.
+            Format the response using markdown where applicable and don't return images.
             --------------
             START CONTEXT
             ${docContext}
